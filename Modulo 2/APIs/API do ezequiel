@@ -1,0 +1,42 @@
+import requests
+# URL base da API
+url_base = "https://jsonplaceholder.typicode.com/posts"
+
+# # 1. Recuperar todos os usuários
+# response = requests.get(url_base) #Está pegando o link e lendo
+# if response.status_code <= 299: #Vai falar se esta funcionando
+#     print("Usuários encontrados:", response.json()) #O response.json só vai funcionar se o url funcionar, vai ler e me mostrar todos os usuarios em formato json
+# else:
+#     print(f"Erro ao tentar procurar, verifique o link") #Caso o link não funcione vai mostrar isso
+
+# # 2. Criar um novo usuário
+# novo_usuario = {
+#  "Nome": "Ezequiel",
+#  "Idade": 15,
+#  "Curso": "Programação em python"
+# }
+# response = requests.post(url_base, json=novo_usuario) #Tá abrindo o link e enviando a informação do novo usuário
+# if response.status_code == 201:
+#     print("Novo usuário criado:", response.json())
+# else: 
+#     print(f"Erro ao criar o usuario, Verifique o link ou usuário")
+
+# 3. Atualizar um usuário existente
+user_id = 2 # ID do usuário que será atualizado
+# usuario_atualizado = {
+#  "Nome": "Isaac",
+#  "Idade": 15,
+#  "Curso": "Baitolagem"
+# }
+# response = requests.put(f"{url_base}/{user_id}", json=usuario_atualizado) #vai abrir o link na url_base/user_id e vai atualizar
+# if response.status_code <= 299:
+#  print("Usuário atualizado:", response.json())
+# else:
+#    print(f"Por favor verifique se o link ou usuário e id estão corretos ")
+
+# 4. Excluir um usuário
+response = requests.delete(f"{url_base}/{user_id}") #está abrindo o link e deletando o usuário colocado
+if response.status_code <= 299:
+ print(f"Usuário com ID {user_id} excluído com sucesso!")
+else:
+   print(f"Erro, Usuário inexistente ou link inválido")
