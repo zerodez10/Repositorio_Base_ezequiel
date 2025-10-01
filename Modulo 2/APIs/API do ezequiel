@@ -46,34 +46,3 @@ response = requests.delete(f"{url_base}/{user_id}") #está abrindo o link e dele
 
 
 
-<div class="skills">
-    <div class="skill">
-      <h3>HTML</h3>
-      <div class="bar" style="--percent: 90%;">
-        <span style="width: 90%; animation-delay: 0.3s;"></span>
-      </div>
-    </div>
-    <div class="skill">
-      <h3>CSS</h3>
-      <div class="bar" style="--percent: 85%;">
-        <span style="width: 85%; animation-delay: 0.5s;"></span>
-      </div>
-    </div>
-    <div class="skill">
-      <h3>JavaScript</h3>
-      <div class="bar" style="--percent: 75%;">
-        <span style="width: 75%; animation-delay: 0.7s;"></span>
-      </div>
-    </div>
-    <div class="skill">
-      <h3>React</h3>
-      <div class="bar" style="--percent: 70%;">
-        <span style="width: 70%; animation-delay: 0.9s;"></span>
-      </div>
-    </div>
-  </div>
-</section>
-if response.status_code <= 299:
- print(f"Usuário com ID {user_id} excluído com sucesso!")
-else:
-   print(f"Erro, Usuário inexistente ou link inválido")
