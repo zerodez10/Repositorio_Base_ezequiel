@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>FlixClone — catálogo</title>
+  <style>
+    :root{
+      --bg:#0b0b0b;
+      --card-bg:#111;
+      --muted:#bfc3c9;
+      --accent:#e50914;
+      --white:#fff;
+      --radius:8px;
+      --gap:12px;
+      --container-pad:28px;
+      --max-width:1300px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background:linear-gradient(180deg,#050505 0%, #0a0a0a 100%);
+      color:var(--white);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    /* NAV */
+    .nav{
+      position:fixed;
+      top:0; left:0; right:0;
+      height:64px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:0 var(--container-pad);
+      z-index:60;
+      background:linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.15));
+      backdrop-filter: blur(6px);
+    }
+
+    .brand{
+      font-weight:800;
+      font-size:20px;
+      color:var(--white);
+      margin-right:18px;
+    }
+
+    .nav__links a{
+      color:var(--muted);
+      text-decoration:none;
+      margin-right:12px;
+      font-size:14px;
+    }
+    .nav__links a.active{color:var(--white); font-weight:600}
+
+    .nav__left{display:flex; align-items:center}
+    .nav__right{display:flex; align-items:center; gap:10px}
+    .icon-btn{
+      background:transparent;
+      color:var(--white);
+      border:0;
+      font-size:18px;
+      padding:6px;
+      cursor:pointer;
+    }
+    .profile img{
+      width:34px; height:34px; border-radius:4px; object-fit:cover;
+      border:1px solid rgba(255,255,255,0.06);
+    }
+
+    /* HERO */
+    .hero{
+      position:relative;
+      height:62vh;
+      min-height:420px;
+      display:flex;
+      align-items:flex-end;
+      margin-top:64px; /* offset nav */
+      overflow:hidden;
+    }
+    .hero__bg{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      transform:scale(1.05);
+      filter:brightness(0.45) contrast(1.05);
+    }
+    .hero__fade{
+      position:absolute;
+      left:0; right:0; bottom:0;
+      height:40%;
+      background:linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(11,11,11,1) 100%);
+    }
+    .hero__content{
+      position:relative;
+      z-index:2;
+      padding:28px var(--container-pad);
+      max-width:var(--max-width);
+      width:100%;
+    }
+    .hero__title{font-size:44px; margin:0 0 10px 0; font-weight:800}
+    .hero__desc{color:var(--muted); max-width:60ch; margin:0 0 18px 0}
+    .hero__actions .btn{margin-right:12px}
+
+    /* BUTTONS */
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      border:0;
+      font-weight:600;
+      padding:10px 16px;
+      border-radius:6px;
+      cursor:pointer;
+    }
+    .btn--play{
+      background:var(--white);
+      color:#000;
+    }
+    .btn--info{
+      background:rgba(255,255,255,0.12);
+      color:var(--white);
+    }
+
+    /* ROWS */
+    main{padding-bottom:80px}
+    .row{padding:18px var(--container-pad) 12px; max-width:var(--max-width); margin:0 auto}
+    .row__title{font-size:18px; margin:6px 0 10px; color:var(--white)}
+    .row__inner{
+      display:flex;
+      gap:12px;
+      overflow-x:auto;
+      padding-bottom:12px;
+      scrollbar-width:thin;
+      scroll-snap-type:x mandatory;
+    }
+    .row__inner::-webkit-scrollbar{height:8px}
+    .row__inner::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.08); border-radius:8px}
+
+    /* Card */
+    .card{
+      min-width:180px;
+      width:180px;
+      background:var(--card-bg);
+      border-radius:8px;
+      overflow:hidden;
+      position:relative;
+      scroll-snap-align:center;
+      transition:transform .22s ease, box-shadow .22s ease;
+      cursor:pointer;
+    }
+    .card img{
+      width:100%;
+      height:260px;
+      object-fit:cover;
+      display:block;
+    }
+    .card__meta{
+      padding:8px;
+      font-size:13px;
+      color:var(--muted);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+    .card:hover{
+      transform:translateY(-10px) scale(1.02);
+      box-shadow:0 10px 30px rgba(0,0,0,0.6);
+    }
+    .card__badge{background:rgba(255,255,255,0.06); padding:4px 6px; border-radius:4px; font-weight:600}
+
+    /* modal */
+    .modal{
+      position:fixed; inset:0; display:none; align-items:center; justify-content:center;
+      background:rgba(0,0,0,0.6); z-index:120;
+    }
+    .modal[aria-hidden="false"]{display:flex}
+    .modal__panel{
+      background:linear-gradient(180deg,#111 0%, #0b0b0b 100%);
+      border-radius:12px;
+      width:min(880px,94%);
+      padding:20px;
+      position:relative;
+      box-shadow:0 20px 50px rgba(0,0,0,0.7);
+    }
+    .modal__close{
+      position:absolute; right:12px; top:12px; background:transparent; color:var(--muted); border:0; font-size:18px; cursor:pointer;
+    }
+    .modal__body{color:var(--muted)}
+    .modal__body h3{color:var(--white); margin-top:0}
+
+    /* footer */
+    .site-footer{color:var(--muted); padding:40px var(--container-pad); text-align:center; font-size:13px}
+
+    /* Responsive */
+    @media (max-width:720px){
+      .hero__title{font-size:26px}
+      .card{min-width:130px; width:130px}
+      .card img{height:180px}
+    }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <div class="nav__left">
+      <div class="brand">FlixClone</div>
+      <nav class="nav__links">
+        <a href="#" class="active">Início</a>
+        <a href="#">Séries</a>
+        <a href="#">Filmes</a>
+        <a href="#">Minha Lista</a>
+      </nav>
+    </div>
+
+    <div class="nav__right">
+      <button class="icon-btn" aria-label="Pesquisar">🔍</button>
+      <button class="icon-btn" aria-label="Notificações">🔔</button>
+      <div class="profile">
+        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=64&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder" alt="Perfil" />
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero">
+      <img class="hero__bg" src="https://images.unsplash.com/photo-1502139214986-6f9d7fcb5aab?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder" alt="" aria-hidden="true"/>
+      <div class="hero__content">
+        <h1 class="hero__title">Título em Destaque</h1>
+        <p class="hero__desc">Sinopse curta do título em destaque — uma frase que convence o usuário a assistir.</p>
+        <div class="hero__actions">
+          <button class="btn btn--play" id="btnPlay">Assistir ▶</button>
+          <button class="btn btn--info" id="btnInfo">Mais informações ℹ</button>
+        </div>
+      </div>
+      <div class="hero__fade"></div>
+    </section>
+
+    <!-- ROWS -->
+    <section class="row">
+      <h2 class="row__title">Títulos Populares</h2>
+      <div class="row__inner" data-row="1">
+        <!-- cards gerados aqui -->
+      </div>
+    </section>
+
+    <section class="row">
+      <h2 class="row__title">Comédias</h2>
+      <div class="row__inner" data-row="2"></div>
+    </section>
+
+    <section class="row">
+      <h2 class="row__title">Ação</h2>
+      <div class="row__inner" data-row="3"></div>
+    </section>
+
+    <footer class="site-footer">
+      <p>Site de demonstração — não é a Netflix. Não use conteúdos protegidos sem permissão.</p>
+    </footer>
+  </main>
+
+  <!-- Modal simples -->
+  <div id="modal" class="modal" aria-hidden="true">
+    <div class="modal__panel" role="dialog" aria-modal="true">
+      <button class="modal__close" id="modalClose" aria-label="Fechar modal">✕</button>
+      <div class="modal__body">
+        <h3 id="modalTitle">Título</h3>
+        <p id="modalText">Descrição completa do título selecionado. Aqui você pode colocar mais detalhes, temporadas, elenco, etc.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const rowsData = [
+      { title: 'Títulos Populares', items: 14 },
+      { title: 'Comédias', items: 10 },
+      { title: 'Ação', items: 12 },
+    ];
+
+    function posterUrl(i){
+      const seeds = [
+        "movie,drama",
+        "city,night",
+        "ocean,cinema",
+        "landscape,epic",
+        "portrait,actor",
+        "forest,moody"
+      ];
+      const q = encodeURIComponent(seeds[i % seeds.length]);
+      return \`https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&crop=entropy&sat=-20&fm=jpg&ix=\${q}&s=\${i}\`;
+    }
+
+    document.querySelectorAll('.row__inner').forEach((container, rowIndex) => {
+      const items = rowsData[rowIndex] ? rowsData[rowIndex].items : 8;
+      for(let i=0;i<items;i++){
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.setAttribute('tabindex','0');
+        card.innerHTML = \`
+          <img src="\${posterUrl(i+rowIndex)}" alt="Poster do título \${i+1}">
+          <div class="card__meta">
+            <div class="card__title">Título \${i+1}</div>
+            <div class="card__badge">\${Math.floor(Math.random()*100)+1}%</div>
+          </div>
+        \`;
+        card.addEventListener('click', ()=> openModal(\`Título \${i+1}\`, \`Esta é a descrição detalhada do Título \${i+1}. Gênero: Demo. Duração: \${90 + (i*3)} min.\`));
+        card.addEventListener('keydown', (e)=> { if(e.key === 'Enter') card.click(); });
+        container.appendChild(card);
+      }
+    });
+
+    const modal = document.getElementById('modal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalText = document.getElementById('modalText');
+    const modalClose = document.getElementById('modalClose');
+
+    function openModal(title, text){
+      modalTitle.textContent = title;
+      modalText.textContent = text;
+      modal.setAttribute('aria-hidden','false');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeModal(){
+      modal.setAttribute('aria-hidden','true');
+      document.body.style.overflow = '';
+    }
+    modalClose.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e)=> { if(e.target === modal) closeModal(); });
+    document.addEventListener('keydown', (e)=> { if(e.key === 'Escape') closeModal(); });
+
+    document.getElementById('btnPlay').addEventListener('click', ()=>{
+      openModal('Reproduzindo: Título em Destaque', 'Aqui poderia abrir um player. Nesta demo mostramos um modal com mais informações.');
+    });
+
+    document.querySelectorAll('.row__inner').forEach(el => {
+      let isDown = false, startX, scrollLeft;
+      el.addEventListener('mousedown', (e) => {
+        isDown = true;
+        el.classList.add('active');
+        startX = e.pageX - el.offsetLeft;
+        scrollLeft = el.scrollLeft;
+      });
+      el.addEventListener('mouseleave', ()=> { isDown = false; el.classList.remove('active'); });
+      el.addEventListener('mouseup', ()=> { isDown = false; el.classList.remove('active'); });
+      el.addEventListener('mousemove', (e) => {
+        if(!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - el.offsetLeft;
+        const walk = (x - startX) * 2;
+        el.scrollLeft = scrollLeft - walk;
+      });
+    });
+  </script>
+</body>
+</html>
