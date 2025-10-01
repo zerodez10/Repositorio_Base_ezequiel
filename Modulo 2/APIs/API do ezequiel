@@ -35,7 +35,44 @@ user_id = 2 # ID do usuário que será atualizado
 #    print(f"Por favor verifique se o link ou usuário e id estão corretos ")
 
 # 4. Excluir um usuário
-response = requests.delete(f"{url_base}/{user_id}") #está abrindo o link e deletando o usuário colocado
+response = requests.delete(f"{url_base}/{user_id}") #está abrindo o link e deletando o usuário colocado 
+
+
+
+
+
+
+
+
+
+
+<div class="skills">
+    <div class="skill">
+      <h3>HTML</h3>
+      <div class="bar" style="--percent: 90%;">
+        <span style="width: 90%; animation-delay: 0.3s;"></span>
+      </div>
+    </div>
+    <div class="skill">
+      <h3>CSS</h3>
+      <div class="bar" style="--percent: 85%;">
+        <span style="width: 85%; animation-delay: 0.5s;"></span>
+      </div>
+    </div>
+    <div class="skill">
+      <h3>JavaScript</h3>
+      <div class="bar" style="--percent: 75%;">
+        <span style="width: 75%; animation-delay: 0.7s;"></span>
+      </div>
+    </div>
+    <div class="skill">
+      <h3>React</h3>
+      <div class="bar" style="--percent: 70%;">
+        <span style="width: 70%; animation-delay: 0.9s;"></span>
+      </div>
+    </div>
+  </div>
+</section>
 if response.status_code <= 299:
  print(f"Usuário com ID {user_id} excluído com sucesso!")
 else:
